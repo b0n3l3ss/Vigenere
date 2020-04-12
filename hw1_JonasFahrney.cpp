@@ -150,7 +150,7 @@ string encrypt(string plainText, string keyword) {
 	for (int i = 0; i < plainText.length(); ++i) {
 		if (keywordCounter >= keyword.lentgh())
 			keywordCounter = 0;
-
+		output = output + returnChar(returnInt(plainText[i] + keyword[keywordCounter]));
 		++keywordCounter;
 	}
 	return output;
