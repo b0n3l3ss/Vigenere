@@ -9,21 +9,51 @@ using namespace std;
 int returnInt(char input);
 string returnChar(int input);
 string encrypt(string plainText, string keyword);
+string decrypt(string cipherText, string keyword);
+void frequencyCalculator(string ciphertext, int keywordLength);
 
 int main() {
 
 	string userInput = "0";
-	regex isValid("[12]");
+	regex isValid("[123]");
 	cout << "Menue for Vigenere Cipher Program" << endl;
-	cout << "Press 1 for encryption and 2 for decryption" << endl;
+	cout << "Press 1 for encryption, 2 for decryption, or 3 for frequency analysis: " << endl;
+	cin >> userInput;
 	bool match = regex_search(userInput, isValid);
 	if (!match) {
 		cout << "Invalid entry" << endl;
 		return 0;
 	}
 	if (userInput == "1") {
-		cout << "Enter text file name: ";
-		string output = ""; // finish this jonas
+		cout << "Enter plain text: ";
+		string output = "";
+		string plaintext = "";
+		cin >> plaintext;
+		string keyword = "";
+		cout << "Enter keyword: ";
+		cin >> keyword;
+		output = encrypt(plaintext, keyword);
+		cout << "Ciphertext: " << output << endl;
+	}
+	else if (userInput == "2") {
+		cout << "Enter ciphertext: ";
+		string output = "";
+		string ciphertext = "";
+		cin >> ciphertext;
+		string keyword = "";
+		cout << "Enter keyword: ";
+		cin >> keyword;
+		output = decrypt(ciphertext, keyword);
+		cout << "Plaintext: " << output << endl;
+	}
+	else if (userInput == "3") {
+		cout << "Enter ciphertext: ";
+		string ciphertext;
+		cin >> ciphertext;
+		int keywordLength;
+		cout << "Enter keyword length: ";
+		cin >> keywordLength;
+		frequencyCalculator(ciphertext, keywordLength);
 	}
 
 
@@ -148,10 +178,36 @@ string encrypt(string plainText, string keyword) {
 	string output = "";
 	int keywordCounter = 0;
 	for (int i = 0; i < plainText.length(); ++i) {
-		if (keywordCounter >= keyword.lentgh())
+		if (keywordCounter >= keyword.size())
 			keywordCounter = 0;
-		output = output + returnChar(returnInt(plainText[i] + keyword[keywordCounter]));
+		output = output + returnChar((returnInt(plainText[i]) + returnInt(keyword[keywordCounter])) % 26);
 		++keywordCounter;
 	}
 	return output;
+}
+string decrypt(string cipherText, string keyword) {
+
+	string output = "";
+	int keywordCounter = 0;
+	for (int i = 0; i < cipherText.size(); ++i) {
+		if (keywordCounter >= keyword.size())
+			keywordCounter = 0;
+		output = output + returnChar((returnInt(cipherText[i]) - returnInt(keyword[keywordCounter]) + 26) % 26);
+		++keywordCounter;
+	}
+	return output;
+}
+void frequencyCalculator(string ciphertext, int keywordLength) {
+	for (int i = 0; i < keywordLength; ++i) {
+		int frequencyChart[26];
+		for (int j = 0; j < 26; ++j)
+			frequencyChart[j] = 0;
+ 		for (int j = 0; (5 * j) + i < ciphertext.size(); ++j) {
+			++frequencyChart[returnInt(ciphertext[(5 * j) + i])];
+		}
+		cout << "[" << frequencyChart[0];
+		for (int j = 1; j < 26; ++j)
+			cout << ", " << frequencyChart[j];
+		cout << "]" << endl;
+	}
 }
